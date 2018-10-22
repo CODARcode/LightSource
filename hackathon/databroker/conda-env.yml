@@ -1,0 +1,13 @@
+name: swift-t
+channels:
+  - lightsource2-tag
+  - defaults
+dependencies:
+  - bluesky
+  - databroker
+  - ipython
+  - numpy
+  - ophyd
+  - pymongo
+  - python=3.6
+  - swift-t
