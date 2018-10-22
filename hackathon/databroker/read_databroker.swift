@@ -21,12 +21,9 @@ deserializer = pickle.loads
 address = ('localhost', 2001)
 
 _context = zmq.Context()
-print(f'=== _context: {_context}')
 _socket = _context.socket(zmq.SUB)
-print(f'=== _socket: {_socket}')
 
 url = "tcp://%s:%d" % address
-print(f'=== _url: {url}')
 _socket.connect(url)
 print('connect')
 
@@ -40,7 +37,7 @@ def _poll(_socket, deserializer, DocumentNames):
         hostname = hostname.decode()
         name = name.decode()
         doc = deserializer(doc)
-        yield (DocumentNames[name], doc)
+        yield (name, doc)
 
 doc_gen = _poll(_socket, deserializer, DocumentNames)
 ----,
@@ -68,15 +65,12 @@ except StopIteration:
 {
   result = python_persist(
 ----
-import time
-time.sleep(1)
-ev = %s
-print(type(ev))
+name, doc = %s
 ----
 % inp
          ,
 ----
-f"{ev['seq_num']} {ev['uid']}: {ev['data']}"
+name
 ----
                   );
 
@@ -87,7 +81,7 @@ global const int MAX = 1000;
 process()
 {
   for (int i = 0, boolean stop = false;
-       i < MAX && !stop;
+       !stop;
        i = i+1, stop = end_of_data)
   {
     line = get_event();
