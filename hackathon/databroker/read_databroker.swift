@@ -9,13 +9,42 @@ location L = locationFromRank(0);
 
 @location=L python_persist(
 ----
-import databroker
 import json
-db = databroker.Broker.named('local')
-h = db[-1]
-doc_gen = h.events()
+import pickle
+import socket
+import time
+import zmq
+from bluesky.run_engine import DocumentNames
+
+
+deserializer = pickle.loads
+address = ('localhost', 2001)
+
+_context = zmq.Context()
+print(f'=== _context: {_context}')
+_socket = _context.socket(zmq.SUB)
+print(f'=== _socket: {_socket}')
+
+url = "tcp://%s:%d" % address
+print(f'=== _url: {url}')
+_socket.connect(url)
+print('connect')
+
+_socket.setsockopt_string(zmq.SUBSCRIBE, "")
+_task = None
+
+def _poll(_socket, deserializer, DocumentNames):
+    while True:
+        message = _socket.recv()
+        hostname, pid, RE_id, name, doc = message.split(b' ', 4)
+        hostname = hostname.decode()
+        name = name.decode()
+        doc = deserializer(doc)
+        yield (DocumentNames[name], doc)
+
+doc_gen = _poll(_socket, deserializer, DocumentNames)
 ----,
-"json.dumps(h.start)") => process();
+"'setup'") => process();
 
 
 
