@@ -14,7 +14,7 @@ location detector = locationFromRank(0);
 s = python_persist("count=0;state=3.14", "str(state)");
 A[0][0] = string2float(s);
 
-(int j, float v) get_event(location detector)
+(int j, float v) get_event(location detector, float ready)
 {
 event_code = """
 count = count+1
@@ -22,9 +22,10 @@ state = state+1
 print('event: count=%i' % count)
 """;
 event_expr = """
-str(count)+','+str(state)'
+str(count)+','+str(state)
 """;
 
+  ready =>
   s = @location=detector
     python_persist(event_code, event_expr);
   t = split(s, ",");
@@ -37,29 +38,28 @@ str(count)+','+str(state)'
 f_code = """
 z = %f
 i = %i
-j = %j
+j = %i
 v = z+i+j
-print('f(%f,%i,%i)=%f'%(z,i,j,v))
+print('f('+str(z)+','+str(i)+','+str(j)+')='+str(v))
 """;
 f_expr = """
 str(v)
 """;
 
-  s = python(f_code%(z,i,j), f_expr);
+  s = python_persist(f_code%(z,i,j), f_expr);
   v = string2float(s);
 }
 
 for (int k = 1; k < max_y; k = k + 1)
 {
-  j,v = get_event(detector);
+  j,v = get_event(detector, A[0][0]);
   A[0][j] = v;
 }
-/*
+
 for (int j = 0; j < max_y; j = j + 1)
 {
   for (int i = 1; i < max_x; i = i + 1)
   {
-    A[i][j] = f(A[i][j-1], i, j);
+    A[i][j] = f(A[i-1][j], i, j);
   }
 }
-*/
