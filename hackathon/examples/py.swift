@@ -1,4 +1,4 @@
 import python;
 
-s = python("x = ", "repr(3)");
+s = python("x = 3", "repr(x)");
 trace(s);
