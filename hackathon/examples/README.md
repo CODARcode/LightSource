@@ -45,3 +45,27 @@ Demonstrates accessing Python modules from Swift/T
 $ swift-t -e PYTHONPATH=$PWD py-module.swift
 trace: 14
 ```
+
+### External apps
+
+Demonstrates external `app` functions, loops, and command-line arguments.
+
+```
+$ swift-t loop.swift -n=3
+dunedin
+dunedin
+dunedin
+```
+### Streaming I/O
+
+Demonstrates use of input data stream
+
+```
+$ swift-t stream.swift --source=input.txt
+opening: input.txt
+processing data: '1.0 2.0 3.0'
+processing data: '4.0 5.0 6.0'
+processing data: '7.0 8.0 9.0'
+processing data: ''
+No more data!
+```

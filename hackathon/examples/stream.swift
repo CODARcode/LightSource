@@ -16,7 +16,7 @@ print("opening: " + filename)
 fp = open(filename, "r")
 ----
 % source) =>
-process();
+loop();
 
 (string result) get_line()
 {
@@ -25,15 +25,27 @@ process();
   result = trim(line);
 }
 
+process(string line)
+{
+  python_persist(
+----
+print("processing data: '%s'")
+---- % line);
+}
+
 global const int MAX = 1000;
-process()
+loop()
 {
   for (int i = 0, boolean stop = false;
        i < MAX && !stop;
        i = i+1, stop = end_of_data)
   {
     line = get_line();
-    printf("processing: '%s'", line);
+    process(line);
     boolean end_of_data = (line == "");
+    if (end_of_data)
+    {
+      printf("No more data!");
+    }
   }
 }
