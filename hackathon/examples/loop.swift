@@ -10,6 +10,5 @@ app hostname()
 
 foreach i in [0:n-1]
 {
-  // echo("hello: " + i);
   hostname();
 }
